@@ -16,7 +16,25 @@ def get_wave_array_str(filename, target_bits):  # type: (str, int) -> str
     nchannels, sampwidth, framerate, nframes, comptype, compname = wave_read.getparams()
     sampwidth *= 8
     for i in range(wave_read.getnframes()):
-        val, = struct.unpack('<H', wave_read.readframes(1))
+        frame = wave_read.readframes(1)
+        if nchannels == 2:
+            # Stereo: extract left channel
+            if sampwidth == 16:
+                left, _ = struct.unpack('<HH', frame)
+                val = left
+            elif sampwidth == 8:
+                left, _ = struct.unpack('<BB', frame)
+                val = left
+            else:
+                raise ValueError(f"Unsupported sample width: {sampwidth}")
+        else:
+            # Mono: use sample directly
+            if sampwidth == 16:
+                val, = struct.unpack('<H', frame)
+            elif sampwidth == 8:
+                val, = struct.unpack('<B', frame)
+            else:
+                raise ValueError(f"Unsupported sample width: {sampwidth}")
         scale_val = (1 << target_bits) - 1
         cur_lim   = (1 << sampwidth) - 1
         # scale current data to 8-bit data
