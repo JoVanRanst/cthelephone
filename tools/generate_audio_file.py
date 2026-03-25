@@ -49,11 +49,12 @@ def get_wave_array_str(filename, target_bits):  # type: (str, int) -> str
 def gen_wave_table(wav_file_list, target_file_name, scale_bits=8):  # type: (List[str], str, int) -> None
     with open(target_file_name, 'w') as audio_table:
         print('#include <stdio.h>', file=audio_table)
-        print('const unsigned char audio_table[] = {', file=audio_table)
+        print('#define CONFIG_AUDIO_SAMPLE_RATE 24000', file=audio_table)
         for wav in wav_file_list:
+            print('const unsigned char {}_audio_table[] = {{'.format(os.path.splitext(os.path.basename(wav))[0]), file=audio_table)
             print('processing: {}'.format(wav))
             print(get_wave_array_str(filename=wav, target_bits=scale_bits), file=audio_table)
-        print('};\n', file=audio_table)
+            print('};\n', file=audio_table)
     print('Done...')
 
 
@@ -63,4 +64,4 @@ if __name__ == '__main__':
     for wavefile in os.listdir('./'):
         if wavefile.endswith('.wav'):
             wav_list.append(wavefile)
-    gen_wave_table(wav_file_list=wav_list, target_file_name='audio_example_file.h')
+    gen_wave_table(wav_file_list=wav_list, target_file_name='audio_file.h')
