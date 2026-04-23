@@ -6,7 +6,10 @@
 // Setup function, needs to be called first
 void setup_audio_player(void);
 
-bool play_dialing();
-bool play_ringing();
-bool play_busy();
-bool play_reply();
+bool audio_playback_finished(void);
+
+void play_dialing();
+void play_ringing();
+void play_busy();
+void play_reply();
+void play_silence();

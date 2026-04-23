@@ -97,6 +97,7 @@ void state_idle() {
     // In this state the program waits for user input
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_IDLE");
     set_RGB_color(true, true, true); // White for idle
+    play_silence();
     if (horn_picked_up) {
         ESP_LOGI(LOG_TAG, "=> horn detected, transitioning to DIALING state");
 
@@ -115,20 +116,24 @@ void state_idle() {
 }
 
 void state_ringing() {
-    // In this state the program plays the ringing audio
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_RINGING");
     set_RGB_color(true, true, false); // Yellow for ringing
 
-    // Play the ringing sound until the horn is picked up or the sound finishes
-    // TODO: addd sound caller
-    vTaskDelay(pdMS_TO_TICKS(1000)); // Simulate ringing duration
-    if (horn_picked_up) {
-        ESP_LOGI(LOG_TAG, "=> horn detected, transitioning to DIALING state");
-        update_state(PROGRAM_STATE_DIALING);
-        return;
+    play_ringing();
+    while (1) {
+        if (horn_picked_up) {
+            ESP_LOGI(LOG_TAG, "=> horn detected, transitioning to DIALING state");
+            play_silence();
+            update_state(PROGRAM_STATE_DIALING);
+            return;
+        }
+        if (audio_playback_finished()) {
+            play_silence();
+            update_state(PROGRAM_STATE_IDLE);
+            return;
+        }
+        vTaskDelay(pdMS_TO_TICKS(20));
     }
-
-    update_state(PROGRAM_STATE_IDLE);
 }
 
 void state_dialing() {
@@ -140,6 +145,7 @@ void state_dialing() {
     pulse_detected = false; // Reset pulse detected flag
     uint8_t sixes_count = 0; // Counter for consecutive '6' digits
     // Start playing dialing tone and wait for the user to finish dialing
+    play_dialing();
     while(horn_picked_up) {
         if (pulse_detected) {
             ESP_LOGI(LOG_TAG, "=> pulse detected, transitioning to DIALING state");
@@ -170,18 +176,24 @@ void state_dialing() {
 }
 
 void state_response() {
-    // In this state the program plays audio in response to the dialing input
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_RESPONDING");
     set_RGB_color(true, false, true); // Purple for responding
 
-    // Trigger audio and for the horn to be dropped
-    //TODO: add sound effect
-    vTaskDelay(pdMS_TO_TICKS(1000)); // Simulate response duration
-    // if(horn_picked_up == false) {
-        
-    // }
-
-    update_state(PROGRAM_STATE_IDLE);
+    play_reply();
+    while (1) {
+        if (!horn_picked_up) {
+            ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
+            play_silence();
+            update_state(PROGRAM_STATE_IDLE);
+            return;
+        }
+        if (audio_playback_finished()) {
+            play_silence();
+            update_state(PROGRAM_STATE_IDLE);
+            return;
+        }
+        vTaskDelay(pdMS_TO_TICKS(20));
+    }
 }
 
 //---------------------------------------------------------------------------------------------
