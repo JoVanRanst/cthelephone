@@ -157,23 +157,23 @@ void setup_audio_player(void)
 
 void play_dialing() {
     ESP_LOGI(LOG_TAG, "Playing DIALING sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialtone_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)dialtone_opti_audio_table, sizeof(dialtone_opti_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialing_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)dialing_audio_table, sizeof(dialing_audio_table));
 }
 void play_ringing() {
     ESP_LOGI(LOG_TAG, "Playing RINGING sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(ring_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)ring_opti_audio_table, sizeof(ring_opti_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(ringing_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)ringing_audio_table, sizeof(ringing_audio_table));
 }
 void play_busy() {
     ESP_LOGI(LOG_TAG, "Playing BUSY sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialtone_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)dialtone_opti_audio_table, sizeof(dialtone_opti_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(openline_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)openline_audio_table, sizeof(openline_audio_table));
 }
 void play_reply() {
     ESP_LOGI(LOG_TAG, "Playing REPLY sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(response_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)response_opti_audio_table, sizeof(response_opti_audio_table));
+    // ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(response_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    // dac_set_audio_stream((uint8_t *)response_opti_audio_table, sizeof(response_opti_audio_table));
 }
 
 void play_silence() {

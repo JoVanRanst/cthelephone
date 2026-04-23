@@ -145,7 +145,7 @@ void state_dialing() {
     pulse_detected = false; // Reset pulse detected flag
     uint8_t sixes_count = 0; // Counter for consecutive '6' digits
     // Start playing dialing tone and wait for the user to finish dialing
-    play_dialing();
+    play_busy();
     while(horn_picked_up) {
         if (pulse_detected) {
             ESP_LOGI(LOG_TAG, "=> pulse detected, transitioning to DIALING state");
@@ -165,6 +165,21 @@ void state_dialing() {
         }
         if (sixes_count >= 3) {
             ESP_LOGI(LOG_TAG, "=> three '6's detected, transitioning to RESPONDING state");
+            play_dialing();
+            while (1) {
+                if (!horn_picked_up) {
+                    ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
+                    play_silence();
+                    update_state(PROGRAM_STATE_IDLE);
+                    return;
+                }
+                if (audio_playback_finished()) {
+                    play_silence();
+                    update_state(PROGRAM_STATE_IDLE);
+                    return;
+                }
+                vTaskDelay(pdMS_TO_TICKS(20));
+            }
             update_state(PROGRAM_STATE_RESPONDING);
             break;
         }
