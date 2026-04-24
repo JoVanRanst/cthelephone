@@ -167,16 +167,21 @@ void play_ringing() {
 }
 void play_busy() {
     ESP_LOGI(LOG_TAG, "Playing BUSY sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(openline_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)openline_audio_table, sizeof(openline_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(line_tone_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)line_tone_audio_table, sizeof(line_tone_audio_table));
+}
+void play_beep() {
+    ESP_LOGI(LOG_TAG, "Playing BEEP sound");
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(beep_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)beep_audio_table, sizeof(beep_audio_table));
 }
 void play_reply() {
     ESP_LOGI(LOG_TAG, "Playing REPLY sound");
-    // ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(response_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    // dac_set_audio_stream((uint8_t *)response_opti_audio_table, sizeof(response_opti_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(response_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)response_opti_audio_table, sizeof(response_opti_audio_table));
 }
 
 void play_silence() {
-    ESP_LOGI(LOG_TAG, "Playing SILENCE (muted)");
+    // ESP_LOGI(LOG_TAG, "Playing SILENCE (muted)");
     dac_set_audio_stream(silence_buffer, SILENCE_BUFFER_SIZE);
 }

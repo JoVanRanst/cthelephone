@@ -92,8 +92,8 @@ void state_boot() {
 }
 
 void state_idle() {
-    static uint8_t idle_time_sec= 10;
-    static uint8_t idle_timer_counter = 0; // Counter for idle timer
+    static uint16_t idle_time_sec= 300;
+    static uint16_t idle_timer_counter = 0; // Counter for idle timer
     // In this state the program waits for user input
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_IDLE");
     set_RGB_color(true, true, true); // White for idle
@@ -175,10 +175,25 @@ void state_dialing() {
                 }
                 if (audio_playback_finished()) {
                     play_silence();
-                    update_state(PROGRAM_STATE_IDLE);
-                    return;
+                    break;
                 }
                 vTaskDelay(pdMS_TO_TICKS(20));
+            }
+            for (int i = 0; i < 3; i++) {
+                play_beep();
+                while (1) {
+                    if (!horn_picked_up) {
+                        ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
+                        play_silence();
+                        update_state(PROGRAM_STATE_IDLE);
+                        return;
+                    }
+                    if (audio_playback_finished()) {
+                        play_silence();
+                        break;
+                    }
+                    vTaskDelay(pdMS_TO_TICKS(20));
+                }
             }
             update_state(PROGRAM_STATE_RESPONDING);
             break;

@@ -13,34 +13,41 @@ except ImportError:
 def get_wave_array_str(filename, target_bits):  # type: (str, int) -> str
     wave_read = wave.open(filename, 'r')
     array_str = ''
-    nchannels, sampwidth, framerate, nframes, comptype, compname = wave_read.getparams()
-    sampwidth *= 8
+    nchannels, sampwidth_bytes, framerate, nframes, comptype, compname = wave_read.getparams()
+    sampwidth = sampwidth_bytes * 8
     for i in range(wave_read.getnframes()):
         frame = wave_read.readframes(1)
         if nchannels == 2:
             # Stereo: extract left channel
             if sampwidth == 16:
-                left, _ = struct.unpack('<HH', frame)
+                left, _ = struct.unpack('<hh', frame)  # signed 16-bit
                 val = left
             elif sampwidth == 8:
-                left, _ = struct.unpack('<BB', frame)
+                left, _ = struct.unpack('<BB', frame)  # unsigned 8-bit
                 val = left
             else:
                 raise ValueError(f"Unsupported sample width: {sampwidth}")
         else:
             # Mono: use sample directly
             if sampwidth == 16:
-                val, = struct.unpack('<H', frame)
+                val, = struct.unpack('<h', frame)  # signed 16-bit
             elif sampwidth == 8:
-                val, = struct.unpack('<B', frame)
+                val, = struct.unpack('<B', frame)  # unsigned 8-bit
             else:
                 raise ValueError(f"Unsupported sample width: {sampwidth}")
-        scale_val = (1 << target_bits) - 1
-        cur_lim   = (1 << sampwidth) - 1
-        # scale current data to 8-bit data
-        val       = val * scale_val / cur_lim
-        val       = int(val + ((scale_val + 1) // 2)) & scale_val
-        array_str += '0x%x, ' % (val)
+
+        # Convert to unsigned 8-bit
+        if sampwidth == 16:
+            # 16-bit signed PCM: -32768..32767 -> 0..255
+            val = int((val + 32768) * 255 / 65535)
+        elif sampwidth == 8:
+            # 8-bit unsigned PCM: 0..255 (no change needed)
+            val = int(val)
+        else:
+            raise ValueError(f"Unsupported sample width: {sampwidth}")
+
+        val = max(0, min(255, val))  # Clamp to 0..255
+        array_str += '0x%02x, ' % (val)
         if (i + 1) % 16 == 0:
             array_str += '\n'
     return array_str

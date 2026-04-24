@@ -11,5 +11,6 @@ bool audio_playback_finished(void);
 void play_dialing();
 void play_ringing();
 void play_busy();
+void play_beep();
 void play_reply();
 void play_silence();
