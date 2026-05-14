@@ -166,21 +166,21 @@ void state_dialing() {
         }
         if (sixes_count >= 3) {
             ESP_LOGI(LOG_TAG, "=> three '6's detected, transitioning to RESPONDING state");
-            play_dialing();
-            while (1) {
-                if (!horn_picked_up) {
-                    ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
-                    play_silence();
-                    update_state(PROGRAM_STATE_IDLE);
-                    return;
-                }
-                if (audio_playback_finished()) {
-                    play_silence();
-                    break;
-                }
-                vTaskDelay(pdMS_TO_TICKS(20));
-            }
-            for (int i = 0; i < 3; i++) {
+            // play_dialing();
+            // while (1) {
+            //     if (!horn_picked_up) {
+            //         ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
+            //         play_silence();
+            //         update_state(PROGRAM_STATE_IDLE);
+            //         return;
+            //     }
+            //     if (audio_playback_finished()) {
+            //         play_silence();
+            //         break;
+            //     }
+            //     vTaskDelay(pdMS_TO_TICKS(20));
+            // }
+            for (int i = 0; i < 2; i++) {
                 play_beep();
                 while (1) {
                     if (!horn_picked_up) {

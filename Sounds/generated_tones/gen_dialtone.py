@@ -2,7 +2,7 @@ import numpy as np
 import scipy.io.wavfile
 
 fs = 48000
-duration = 1.0  # seconds of ring
+duration = 2.0  # seconds of ring
 t = np.linspace(0, duration, int(fs*duration), endpoint=False)
 ring = 0.5 * (np.sin(2*np.pi*400*t) + np.sin(2*np.pi*450*t))
 # Scale to 8-bit unsigned

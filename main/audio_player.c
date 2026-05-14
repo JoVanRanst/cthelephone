@@ -169,7 +169,8 @@ void play_ringing() {
 void play_busy() {
     ESP_LOGI(LOG_TAG, "Playing BUSY sound");
     ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(line_tone_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)line_tone_audio_table, sizeof(line_tone_audio_table));
+    // dac_set_audio_stream((uint8_t *)line_tone_audio_table, sizeof(line_tone_audio_table));
+    dac_set_audio_stream(silence_buffer, SILENCE_BUFFER_SIZE);
 }
 void play_beep() {
     ESP_LOGI(LOG_TAG, "Playing BEEP sound");
