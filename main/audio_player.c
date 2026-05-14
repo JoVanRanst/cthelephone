@@ -155,15 +155,16 @@ void setup_audio_player(void)
     xTaskCreate(dac_playback_task, "dac_playback_task", 4096, &playback_ctx, 5, NULL);
 }
 
+
 void play_dialing() {
     ESP_LOGI(LOG_TAG, "Playing DIALING sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialing_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)dialing_audio_table, sizeof(dialing_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialtone_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)dialtone_opti_audio_table, sizeof(dialtone_opti_audio_table));
 }
 void play_ringing() {
     ESP_LOGI(LOG_TAG, "Playing RINGING sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(ringing_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)ringing_audio_table, sizeof(ringing_audio_table));
+    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(one_ring_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    dac_set_audio_stream((uint8_t *)one_ring_audio_table, sizeof(one_ring_audio_table));
 }
 void play_busy() {
     ESP_LOGI(LOG_TAG, "Playing BUSY sound");

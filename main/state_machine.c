@@ -92,7 +92,8 @@ void state_boot() {
 }
 
 void state_idle() {
-    static uint16_t idle_time_sec= 300;
+    // static uint16_t idle_time_sec= 300;
+    static uint16_t idle_time_sec= 10;
     static uint16_t idle_timer_counter = 0; // Counter for idle timer
     // In this state the program waits for user input
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_IDLE");
