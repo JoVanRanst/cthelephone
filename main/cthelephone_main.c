@@ -43,6 +43,16 @@ void setup_phoneIO(void)
         .intr_type = GPIO_INTR_ANYEDGE, // or GPIO_INTR_NEGEDGE depending on your wiring
     };
     gpio_config(&io_conf_horn);
+    
+    // Additional CALL ID led GPIO
+    gpio_config_t io_conf_call_id = {
+        .pin_bit_mask = 1ULL << CALL_ID_GPIO,
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE,
+    };
+    gpio_config(&io_conf_call_id);
 }
 void setup_RGBIO(void)
 {

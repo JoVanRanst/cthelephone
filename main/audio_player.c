@@ -156,11 +156,6 @@ void setup_audio_player(void)
 }
 
 
-void play_dialing() {
-    ESP_LOGI(LOG_TAG, "Playing DIALING sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(dialtone_opti_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
-    dac_set_audio_stream((uint8_t *)dialtone_opti_audio_table, sizeof(dialtone_opti_audio_table));
-}
 void play_ringing() {
     ESP_LOGI(LOG_TAG, "Playing RINGING sound");
     ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(one_ring_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
@@ -168,7 +163,8 @@ void play_ringing() {
 }
 void play_busy() {
     ESP_LOGI(LOG_TAG, "Playing BUSY sound");
-    ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(line_tone_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    // ESP_LOGI(LOG_TAG, "Audio size %d bytes, played at frequency %d Hz asynchronously", sizeof(line_tone_audio_table), CONFIG_AUDIO_SAMPLE_RATE);
+    // Do to the clicking noise at the end of the line tone, we switch to the silence buffer after playing the line tone to ensure a clean transition to the next sound
     // dac_set_audio_stream((uint8_t *)line_tone_audio_table, sizeof(line_tone_audio_table));
     dac_set_audio_stream(silence_buffer, SILENCE_BUFFER_SIZE);
 }

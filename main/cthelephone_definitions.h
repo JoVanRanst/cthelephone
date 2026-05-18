@@ -15,6 +15,7 @@
 //GPIO definitions
 #define ROTARY_GPIO 27
 #define HORN_GPIO 22
+#define CALL_ID_GPIO 21
 
 //---------------------------------------------------------------------------------------------
 // AUDIO PLAYER TYPE SELECTION
