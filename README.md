@@ -1,22 +1,26 @@
-| Supported Targets | ESP32 | ESP32-S2 |
-| ----------------- | ----- | -------- |
+| Hardware Target | ESP32 | CHEAP-YELLOW-DISPLAY |
+| --------------- | ----- | -------------------- |
+# Cthulhu rotary telephone
 
-# DAC Constant Example
+This project is part of a art installation that brings several characters to live from the H.P. Lovecraft novels, but from the view of how their lives would look like in our modern day.
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+One of the works, called 'calling Cthulhu'. Through an old rotary phone place near the work, visistors can call with him directly, getting a joke from him.
 
-## Overview
+## Hardware
 
-This example shows how to play a piece of audio by DAC driver.
+The main ingrediants are:
+- A CYD (Cheap-Yellow-Display), which allready contains a ESP32 and a audio amp.
+- Connectors for the audio and the CN1 connector.
+- An old rotary phone
+
+Optionally: adding in a smith trigger circuit on the rotary lines helps with stability
+
+## Software
+
+The core is a state machine that runs through each possible state.
+....
 
 ## How to use the Example
-
-### Hardware Required
-
-* A development board with ESP32 or ESP32-S2 SoC
-    - Note that some ESP32-S2 DevKits have LED on it which is connected to GPIO18 (same pin as DAC channel2), so the output voltage of DAC channel 1 can't go down due the this LED.
-* An Audio Power Amplifier like `NS4150`
-* A speaker or earphone to play the audio
 
 ### Configure the Project
 
@@ -47,7 +51,3 @@ I (287) dac audio: DAC initialized success, DAC DMA is ready
 I (297) dac audio: Audio size 79512 bytes, played at frequency 16000 Hz
 I (5137) dac audio: Audio size 79512 bytes, played at frequency 16000 Hz
 I (9967) dac audio: Audio size 79512 bytes, played at frequency 16000 Hz
-...
-```
-
-And meanwhile, you can hear the audio played every 1 second from the speaker or earphone.

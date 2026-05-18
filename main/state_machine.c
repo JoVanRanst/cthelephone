@@ -51,8 +51,6 @@ static void IRAM_ATTR horn_isr_handler(void* arg) {
     } else {
         horn_picked_up = false;
     }
-    // Make sure the sound player is returned to neutral
-    
 }
 
 //---------------------------------------------------------------------------------------------
@@ -64,6 +62,9 @@ void set_RGB_color(bool red, bool green, bool blue)
     gpio_set_level(RED_LED_GPIO, red ? 0 : 1);
     gpio_set_level(GREEN_LED_GPIO, green ? 0 : 1);
     gpio_set_level(BLUE_LED_GPIO, blue ? 0 : 1);
+}
+void call_id_led(bool on) {
+    gpio_set_level(CALL_ID_GPIO, on ? 0 : 1);
 }
 // Handles all things switching states
 void update_state(enum program_state new_state) {
@@ -85,6 +86,7 @@ void state_boot() {
         gpio_install_isr_service(0);
         gpio_isr_handler_add(ROTARY_GPIO, rotary_isr_handler, NULL);
         gpio_isr_handler_add(HORN_GPIO, horn_isr_handler, NULL);
+        call_id_led(false); // Ensure CALL ID LED is off in idle state
 
         update_state(PROGRAM_STATE_IDLE);
         vTaskDelay(pdMS_TO_TICKS(2000));
@@ -92,12 +94,12 @@ void state_boot() {
 }
 
 void state_idle() {
-    // static uint16_t idle_time_sec= 300;
-    static uint16_t idle_time_sec= 10;
+    static uint16_t idle_time_sec= 480;
     static uint16_t idle_timer_counter = 0; // Counter for idle timer
     // In this state the program waits for user input
     ESP_LOGI(LOG_TAG, "=> PROGRAM_STATE_IDLE");
     set_RGB_color(true, true, true); // White for idle
+    call_id_led(false); // Ensure CALL ID LED is off in idle state
     play_silence();
     if (horn_picked_up) {
         ESP_LOGI(LOG_TAG, "=> horn detected, transitioning to DIALING state");
@@ -147,6 +149,7 @@ void state_dialing() {
     uint8_t sixes_count = 0; // Counter for consecutive '6' digits
     // Start playing dialing tone and wait for the user to finish dialing
     play_busy();
+    call_id_led(true); // Turn on CALL ID LED to indicate response is playing
     while(horn_picked_up) {
         if (pulse_detected) {
             ESP_LOGI(LOG_TAG, "=> pulse detected, transitioning to DIALING state");
@@ -166,22 +169,8 @@ void state_dialing() {
         }
         if (sixes_count >= 3) {
             ESP_LOGI(LOG_TAG, "=> three '6's detected, transitioning to RESPONDING state");
-            // play_dialing();
-            // while (1) {
-            //     if (!horn_picked_up) {
-            //         ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
-            //         play_silence();
-            //         update_state(PROGRAM_STATE_IDLE);
-            //         return;
-            //     }
-            //     if (audio_playback_finished()) {
-            //         play_silence();
-            //         break;
-            //     }
-            //     vTaskDelay(pdMS_TO_TICKS(20));
-            // }
             for (int i = 0; i < 2; i++) {
-                play_beep();
+                play_beep(); // Play the Beep 2 times
                 while (1) {
                     if (!horn_picked_up) {
                         ESP_LOGI(LOG_TAG, "=> horn put down, ending reply early");
